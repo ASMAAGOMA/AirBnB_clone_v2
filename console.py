@@ -2,6 +2,8 @@
 """ Console Module """
 import cmd
 import sys
+from datetime import datetime
+from models import storage
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -146,17 +148,24 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     # Integer value
                     value = int(value)
-                params[key] = value
+                # Exclude '__class__' key from parameters
+                if key != '__class__':
+                    params[key] = value
             except ValueError:
                 # Skip parameters that don't fit the expected syntax
                 pass
+
+        # Set created_at and updated_at attributes to current datetime if missing
+        if 'created_at' not in params:
+            params['created_at'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        if 'updated_at' not in params:
+            params['updated_at'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
 
         # Create a new instance of the specified class with the provided parameters
         new_instance = HBNBCommand.classes[class_name](**params)
         storage.save()
         print(new_instance.id)
         storage.save()
-
 
     def help_create(self):
         """ Help information for the create method """
