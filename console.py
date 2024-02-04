@@ -116,40 +116,45 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+        def do_create(self, line):
+            """
+            Console improvements
+            """
+            try:
+                if not line:
+                    raise SyntaxError()
+                li = line.split(" ")
 
-    def do_create(self, line):
-        """
-	    Console improvements
-        """
-        try:
-            if not line:
-                raise SyntaxError()
-            li = line.split(" ")
+                argum = {}
+                for i in range(1, len(li)):
+                    key, value = tuple(li[i].split("="))
+                    if value[0] == '"':
+                        value = value.strip('"').replace("_", " ")
+                    else:
+                        try:
+                            value = eval(value)
+                        except (SyntaxError, NameError):
+                            continue
+                    argum[key] = value
 
-            argum = {}
-            for i in range(1, len(li)):
-                key, value = tuple(li[i].split("="))
-                if value[0] == '"':
-                    value = value.strip('"').replace("_", " ")
+                # Set default values for created_at and updated_at if not provided
+                if 'created_at' not in argum:
+                    argum['created_at'] = datetime.now()
+                if 'updated_at' not in argum:
+                    argum['updated_at'] = datetime.now()
+
+                if argum == {}:
+                    objec = eval(li[0])()
                 else:
-                    try:
-                        value = eval(value)
-                    except (SyntaxError, NameError):
-                        continue
-                argum[key] = value
+                    objec = eval(li[0])(**argum)
+                    storage.new(objec)
+                print(objec.id)
+                objec.save()
 
-            if argum == {}:
-                objec = eval(li[0])()
-            else:
-                objec = eval(li[0])(**argum)
-                storage.new(objec)
-            print(objec.id)
-            objec.save()
-
-        except SyntaxError:
-            print("** class name missing **")
-        except NameError:
-            print("** class doesn't exist **")
+            except SyntaxError:
+                print("** class name missing **")
+            except NameError:
+                print("** class doesn't exist **")
 
 
     def help_create(self):
