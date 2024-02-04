@@ -117,55 +117,40 @@ class HBNBCommand(cmd.Cmd):
         pass
 
 
-    def do_create(self, args):
-        """ Create an object of any class"""
-        if not args:
-            print("** class name missing **")
-            return
+    def do_create(self, line):
+        """
+	    Console improvements
+        """
+        try:
+            if not line:
+                raise SyntaxError()
+            li = line.split(" ")
 
-        args_list = shlex.split(args)
-        class_name = args_list[0]
-
-        if class_name not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-
-        # Extract parameters from the input
-        params = {}
-        for arg in args_list[1:]:
-            try:
-                key, value = arg.split('=')
-                key = key.strip()
-                value = value.strip()
-                # Handle different value syntaxes
-                if value.startswith('"') and value.endswith('"'):
-                    # String value
-                    value = value[1:-1].replace('_', ' ')
-                    value = value.replace('\\"', '"')  # Unescape double quotes
-                elif '.' in value:
-                    # Float value
-                    value = float(value)
+            argum = {}
+            for i in range(1, len(li)):
+                key, value = tuple(li[i].split("="))
+                if value[0] == '"':
+                    value = value.strip('"').replace("_", " ")
                 else:
-                    # Integer value
-                    value = int(value)
-                # Exclude '__class__' key from parameters
-                if key != '__class__':
-                    params[key] = value
-            except ValueError:
-                # Skip parameters that don't fit the expected syntax
-                pass
+                    try:
+                        value = eval(value)
+                    except (SyntaxError, NameError):
+                        continue
+                argum[key] = value
 
-        # Set created_at and updated_at attributes to current datetime if missing
-        if 'created_at' not in params:
-            params['created_at'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
-        if 'updated_at' not in params:
-            params['updated_at'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+            if argum == {}:
+                objec = eval(li[0])()
+            else:
+                objec = eval(li[0])(**argum)
+                storage.new(objec)
+            print(objec.id)
+            objec.save()
 
-        # Create a new instance of the specified class with the provided parameters
-        new_instance = HBNBCommand.classes[class_name](**params)
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+        except SyntaxError:
+            print("** class name missing **")
+        except NameError:
+            print("** class doesn't exist **")
+
 
     def help_create(self):
         """ Help information for the create method """
