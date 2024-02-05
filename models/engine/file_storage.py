@@ -52,7 +52,8 @@ class FileStorage:
                 for key, val in data.items():
                     class_name = val.pop('__class__', None)
                     if class_name in classes:
-                        self.all()[key] = classes[class_name](**val)
+                        obj = classes[class_name](**val)
+                        self.__objects[key] = obj  # Update the dictionary with the new object
                     else:
                         print(f"Unknown class: {class_name}")
         except FileNotFoundError:
