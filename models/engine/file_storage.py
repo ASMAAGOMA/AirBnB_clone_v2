@@ -36,15 +36,19 @@ class FileStorage:
         from models.review import Review
 
         classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
+
         try:
-            temp = {}
             with open(FileStorage.__file_path, encoding="utf-8") as json_file:
-                temp = json.load(json_file)
-                for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
+                data = json.load(json_file)
+                for key, val in data.items():
+                    class_name = val.pop('__class__', None)
+                    if class_name in classes:
+                        self.all()[key] = classes[class_name](**val)
+                    else:
+                        print(f"Unknown class: {class_name}")
         except FileNotFoundError:
             pass
