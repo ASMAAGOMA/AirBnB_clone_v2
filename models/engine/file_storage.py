@@ -14,9 +14,14 @@ class FileStorage:
         If cls is None, returns all objects.
         """
         if cls is None:
-            return self.__objects.values()
-        else:
-            return [obj for obj in self.__objects.values() if isinstance(obj, cls)]
+            return self.__objects
+        name = cls.__name__
+        dicty = {}
+        for key in self.__objects.keys():
+            if key.split('.')[0] == name:
+                dicty[key] = self.__objects[key]
+        return dicty
+
     def new(self, obj):
         """Adds new object to storage dictionary"""
         self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
