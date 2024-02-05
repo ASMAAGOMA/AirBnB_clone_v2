@@ -1,10 +1,12 @@
---database hbnb_test_db
+-- Create the database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS hbnb_test_db;
---create user
+
+-- Create the user if it doesn't exist
 CREATE USER IF NOT EXISTS 'hbnb_test'@'localhost' IDENTIFIED BY 'hbnb_test_pwd';
---give select privilleges
-GRANT SELECT ON performance_schema.* to 'hbnb_test'@'localhost';
-FLUSH PRIVILEGES;
---give all privilleges
+
+-- Grant privileges to the user
+GRANT SELECT ON performance_schema.* TO 'hbnb_test'@'localhost';
 GRANT ALL PRIVILEGES ON hbnb_test_db.* TO 'hbnb_test'@'localhost';
+
+-- Flush privileges
 FLUSH PRIVILEGES;
