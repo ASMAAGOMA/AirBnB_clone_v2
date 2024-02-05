@@ -5,7 +5,7 @@ import os
 
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
-    __file_path = 'file.json'
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
@@ -42,8 +42,8 @@ class FileStorage:
                   }
         try:
             temp = {}
-            with open(FileStorage.__file_path, 'r') as f:
-                temp = json.load(f)
+            with open(FileStorage.__file_path, encoding="utf-8") as json_file:
+                temp = json.load(json_file)
                 for key, val in temp.items():
                     self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
