@@ -34,41 +34,41 @@ class DBStorage:
 
     def all(self, cls=None):
         """
-        Returns the list of objects of one type of class.
-        If cls is None, returns all objects.
+        Returns a dictionary of objects.
+        If cls is specified, returns objects of that class.
         """
         dicty = {}
         if cls is None:
-            for i in classes.values():
-                objects = self.__session.query(i).all()
-                for object in objects:
-                    the_key = object.__class__.__name__ + '.' + object.id
-                    dicty = object[the_key]
+            for cls in classes.values():
+                objects = self.__session.query(cls).all()
+                for obj in objects:
+                    key = f"{obj.__class__.__name__}.{obj.id}"
+                    dicty[key] = obj
         else:
             objects = self.__session.query(cls).all()
-            for object in objects:
-                the_key = object.__class__.__name__ + '.' + object.id
-                dicty = object[the_key]
+            for obj in objects:
+                key = f"{obj.__class__.__name__}.{obj.id}"
+                dicty[key] = obj
         return dicty
 
     def new(self, obj):
-        """adds a new object"""
-        if obj != None:
+        """Add a new object to the database session"""
+        if obj is not None:
             self.__session.add(obj)
-            self.__session.flush()
-            self.__session.refresh()
 
     def save(self):
-        """commits changes"""
+        """Commit all changes to the database"""
         self.__session.commit()
 
     def delete(self, obj=None): 
-        """deletes obj"""
-        if obj != None:
-            self.__session.query(type(obj)).filter(type(obj).id == obj.id).delete()
+        """Delete an object from the database"""
+        if obj is not None:
+            self.__session.delete(obj)
 
     def reload(self):
-        """reload"""
+        """Reload objects from the database"""
         Base.metadata.create_all(self.__engine)
+        if self.__session is not None:
+            self.__session.close()
         s = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(s)
