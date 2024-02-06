@@ -8,7 +8,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
 from models import store_type
 
-class City(BaseModel):
+class City(BaseModel, Base):
     """ The city class, contains state ID and name """
     __tablename__ = 'cities'
     if store_type == 'db':
