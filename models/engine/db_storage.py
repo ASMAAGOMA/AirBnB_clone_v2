@@ -7,9 +7,9 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
 
 classes = {"User": User, "Place": Place, "Amenity": Amenity, "State": State
@@ -30,7 +30,7 @@ class DBStorage:
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
                         .format(HBNB_MYSQL_USER, HBNB_MYSQL_PWD, HBNB_MYSQL_HOST, HBNB_MYSQL_DB), pool_pre_ping=True)
         if HBNB_ENV == 'test':
-            BaseModel.metadata.drop_all(self.__engine)
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """
@@ -61,3 +61,14 @@ class DBStorage:
     def save(self):
         """commits changes"""
         self.__session.commit()
+
+    def delete(self, obj=None): 
+        """deletes obj"""
+        if obj != None:
+            self.__session.query(type(obj)).filter(type(obj).id == obj.id).delete()
+
+    def reload(self):
+        """reload"""
+        Base.metadata.create_all(self.__engine)
+        s = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        self.__session = scoped_session(s)
