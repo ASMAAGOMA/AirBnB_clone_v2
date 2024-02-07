@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+""" State Module"""
 from models.base_model import BaseModel, Base
 from models import storage_type
 from sqlalchemy import Column, String
 
 
-
-class Amenity(BaseModel):
+class Amenity(BaseModel, Base):
+    '''amenity'''
     __tablename__ = 'amenities'
     if storage_type == 'db':
         name = Column(String(128), nullable=False)
