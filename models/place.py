@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-""" Place Module for HBNB project """
+""" Place Module"""
+
 from models.amenity import Amenity
 from models.review import Review
 from models.base_model import BaseModel, Base
@@ -9,7 +10,21 @@ from sqlalchemy.sql.schema import Table
 from sqlalchemy.orm import relationship
 
 
-class Place(BaseModel):
+if storage_type == 'db':
+    place_amenity = Table('place_amenity', Base.metadata,
+                          Column('place_id', String(60),
+                                 ForeignKey('places.id'),
+                                 primary_key=True,
+                                 nullable=False),
+                          Column('amenity_id', String(60),
+                                 ForeignKey('amenities.id'),
+                                 primary_key=True,
+                                 nullable=False)
+                          )
+
+
+class Place(BaseModel, Base):
+    """place"""
     __tablename__ = 'places'
     if storage_type == 'db':
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
@@ -41,9 +56,7 @@ class Place(BaseModel):
 
         @property
         def reviews(self):
-            ''' returns list of review instances with place_id
-                equals to the cyrrent Place.id
-                FileStorage relationship between Place and Review
+            ''' returns list of review instances
             '''
             from models import storage
             all_revs = storage.all(Review)
@@ -55,9 +68,7 @@ class Place(BaseModel):
 
         @property
         def amenities(self):
-            ''' returns the list of Amenity instances
-                based on the attribute amenity_ids that
-                contains all Amenity.id linked to the Place
+            ''' returns the list of Amenity
             '''
             from models import storage
             all_amens = storage.all(Amenity)
@@ -69,9 +80,7 @@ class Place(BaseModel):
 
         @amenities.setter
         def amenities(self, obj):
-            ''' method for adding an Amenity.id to the
-                attribute amenity_ids. accepts only Amenity
-                objects
+            ''' method for adding an Amenity
             '''
             if obj is not None:
                 if isinstance(obj, Amenity):

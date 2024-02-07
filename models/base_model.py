@@ -3,7 +3,8 @@
 import uuid
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DATETIME
+from sqlalchemy import Column, String, DATETIME
+from models import storage_type
 
 Base = declarative_base()
 
@@ -16,23 +17,22 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """Instantiates a new model"""
         if not kwargs:
-            from models import storage
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            storage.new(self)
         else:
-            self.id = kwargs.pop('id', str(uuid.uuid4()))
-            self.created_at = kwargs.pop('created_at', datetime.now())
-            self.updated_at = kwargs.pop('updated_at', datetime.now())
-            # Parse datetime strings if provided
-            if isinstance(self.created_at, str):
-                self.created_at = datetime.strptime(self.created_at, '%Y-%m-%dT%H:%M:%S.%f')
-            if isinstance(self.updated_at, str):
-                self.updated_at = datetime.strptime(self.updated_at, '%Y-%m-%dT%H:%M:%S.%f')
-            # Update other attributes
-            for key, value in kwargs.items():
-                setattr(self, key, value)
+            for k in kwargs:
+                if k in ['created_at', 'updated_at']:
+                    setattr(self, k, datetime.fromisoformat(kwargs[k]))
+                elif k != '__class__':
+                    setattr(self, k, kwargs[k])
+            if storage_type == 'db':
+                if not hasattr(kwargs, 'id'):
+                    setattr(self, 'id', str(uuid.uuid4()))
+                if not hasattr(kwargs, 'created_at'):
+                    setattr(self, 'created_at', datetime.now())
+                if not hasattr(kwargs, 'updated_at'):
+                    setattr(self, 'updated_at', datetime.now())
 
 
     def __str__(self):
@@ -44,6 +44,7 @@ class BaseModel:
         """Updates updated_at with current time when instance is changed"""
         from models import storage
         self.updated_at = datetime.now()
+        storage.new(self)
         storage.save()
 
     def to_dict(self):
