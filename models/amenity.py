@@ -4,4 +4,8 @@ from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
-    name = ""
+    __tablename__ = 'amenities'
+    if storage_type == 'db':
+        name = Column(String(128), nullable=False)
+    else:
+        name = ""
