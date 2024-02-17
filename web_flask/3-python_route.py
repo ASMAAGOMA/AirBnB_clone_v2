@@ -24,6 +24,8 @@ def Text(text):
     return f"C {spaces_word}"
 
 
+@flask_app.route("/python/", defaults={'text': 'is cool'},
+                 strict_slashes=False)
 @flask_app.route("/python/<text>", strict_slashes=False)
 def Text2(text):
     """HBNB"""
