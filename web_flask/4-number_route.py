@@ -33,10 +33,9 @@ def Text2(text):
     return f"Python {spaces_word}"
 
 
-@flask_app.route("/number/<n>", strict_slashes=False)
+@flask_app.route("/number/<int:n>", strict_slashes=False)
 def num(n):
     """num"""
-    number = int(n)
     return f"{n} is an integer"
 
 
