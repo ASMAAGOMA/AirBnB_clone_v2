@@ -21,8 +21,7 @@ def homePage2():
 def Text(text):
     """HBNB"""
     spaces_word = text.replace('_', ' ')
-    final = f"c{spaces_word}"
-    return final
+    return f"c{spaces_word}"
 
 
 if __name__ == "__main__":
