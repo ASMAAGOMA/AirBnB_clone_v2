@@ -37,9 +37,10 @@ def Text2(text):
 def num(n):
     """num"""
     try:
-        return f"{n} is an integer"
+        return f"{n} is a number"
     except:
         return "Not a valid number"
+
 
 
 if __name__ == "__main__":
