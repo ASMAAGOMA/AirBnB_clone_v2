@@ -11,7 +11,7 @@ def homePage():
     return "Hello HBNB!"
 
 
-flask_app.route("/hbnb", strict_slashes=False)
+@flask_app.route("/hbnb", strict_slashes=False)
 
 
 def homePage2():
