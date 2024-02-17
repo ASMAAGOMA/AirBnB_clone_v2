@@ -17,11 +17,11 @@ def homePage2():
     return "HBNB"
 
 
-@flask_app.route("/c/<string:text>", strict_slashes=False)
-def customText(text):
+@flask_app.route("/c/<text>", strict_slashes=False)
+def Text(text):
     """HBNB"""
     spaces_word = text.replace('_', ' ')
-    final = f"c {spaces_word}"
+    final = f"c{spaces_word}"
     return final
 
 
