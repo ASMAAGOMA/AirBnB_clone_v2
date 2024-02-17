@@ -40,7 +40,7 @@ def num(n):
 
 
 @flask_app.route("/number_template/<int:n>", strict_slashes=False)
-def num(n):
+def num_template(n):
     """html"""
     return render_template('5-number.html', n=n)
 
