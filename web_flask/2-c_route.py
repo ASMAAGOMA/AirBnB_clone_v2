@@ -17,7 +17,7 @@ def homePage2():
     return "HBNB"
 
 
-@flask_app.route("/c/<text>", strict_slashes=False)
+@flask_app.route("/c/<string:text>", strict_slashes=False)
 def customText(text):
     """HBNB"""
     spaces_word = text.replace('_', ' ')
