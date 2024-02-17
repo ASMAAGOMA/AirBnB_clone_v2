@@ -40,7 +40,7 @@ def num(n):
         number = int(n)
         return f"{n} is an integer"
     except ValueError:
-        return "Not Found", 404
+        return "Not a valid number", 404
 
 
 if __name__ == "__main__":
