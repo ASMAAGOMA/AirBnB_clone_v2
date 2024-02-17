@@ -36,11 +36,7 @@ def Text2(text):
 @flask_app.route("/number/<int:n>", strict_slashes=False)
 def num(n):
     """num"""
-    try:
-        return f"{n} is a number"
-    except:
-        return "Not a valid number"
-
+    return f"{n} is a number"
 
 
 if __name__ == "__main__":
