@@ -16,7 +16,7 @@ flask_app.route("/hbnb", strict_slashes=False)
 
 def homePage2():
     """HBNB"""
-    return "HBNB!"
+    return "HBNB"
 
 
 if __name__ == "__main__":
