@@ -10,7 +10,7 @@ flask_app = Flask(__name__)
 def state():
     """list"""
     states = storage.all("State")
-    return render_template("7-states_list.py", states=states)
+    return render_template("7-states_list.html", states=states)
 
 
 @flask_app.teardown_appcontext
